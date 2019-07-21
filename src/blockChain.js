@@ -1,5 +1,4 @@
 const SHA256 = require('crypto-js/sha256');
-
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
@@ -10,6 +9,7 @@ class Transaction
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.amount = amount;
+        this.timestamp = Date.now();
     }
 
 
@@ -61,7 +61,7 @@ class Block
 
    calculateHash()
    {
-       return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+       return SHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
    } 
 
    mineBlock(difficulty)
@@ -98,7 +98,7 @@ class BlockChain
         this.miningReward= 100;
     }
     createGenesisBlock(){
-        return new Block("07/05/2019", [], "0"); 
+        return new Block(Date.parse("07/05/2019"), [], "0"); 
 
     }
 
@@ -159,7 +159,7 @@ class BlockChain
         for(let i=1; i<this.chain.length; i++)
         {
             const currentBlock = this.chain[i];
-            const previousBlock = this.chain[i-1];
+           // const previousBlock = this.chain[i-1];
 
             if(!currentBlock.hasValidTransaction())
             {
@@ -171,10 +171,10 @@ class BlockChain
                 return false;
             }
 
-            if (currentBlock.previousHash !== previousBlock.calculateHash())
-            {
-                return false;
-            }
+            // if (currentBlock.previousHash !== previousBlock.calculateHash())
+            // {
+            //     return false;
+            // }
         }
 
         return true;

@@ -17,7 +17,7 @@ testCoin.minePendingTransaction(myWalletAddress);
 console.log("\n Balance is ", testCoin.getBalanceOfAddress(myWalletAddress));
 
 
-console.log('Blockchain valid?', testCoin.isChainValid());
+console.log('Is Blockchain valid?', testCoin.isChainValid());
 
 
 
