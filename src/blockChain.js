@@ -98,7 +98,7 @@ class BlockChain
         this.miningReward= 100;
     }
     createGenesisBlock(){
-        return new Block("07/05/2019", "Genesis Block", "0"); 
+        return new Block("07/05/2019", [], "0"); 
 
     }
 
@@ -108,15 +108,17 @@ class BlockChain
 
     minePendingTransaction(miningRewardAddress)
     {
-        let block = new Block(Date.now(), this.pendingTransaction);
+        const rewardTx = new Transaction(null,miningRewardAddress, this.miningReward);
+        this.pendingTransaction.push(rewardTx);
+
+        let block = new Block(Date.now(), this.pendingTransaction, this.getLatestBlock().hash);
         block.mineBlock(this.difficulty);
         console.log("Block successfully mined!!");
         this.chain.push(block);
-        this.pendingTransaction = [
-            new Transaction(null, miningRewardAddress, this.miningReward)
-        ];
+        this.pendingTransaction = [];
     }
-    
+  
+
     addTransaction(transactions)
     {
         if(!transactions.fromAddress || !transactions.toAddress)
@@ -169,7 +171,7 @@ class BlockChain
                 return false;
             }
 
-            if (currentBlock.previousHash !== previousBlock.hash)
+            if (currentBlock.previousHash !== previousBlock.calculateHash())
             {
                 return false;
             }
